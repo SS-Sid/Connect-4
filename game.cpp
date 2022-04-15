@@ -1,5 +1,5 @@
 #include <iostream>
-#include "game.h"
+#include "game.hpp"
 
 const int MAX_DEPTH = 10;
 

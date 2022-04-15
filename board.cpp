@@ -1,6 +1,6 @@
 #include <iostream>
 #include <math.h>
-#include "board.h"
+#include "board.hpp"
 
 //PRIVATE FUNCTIONS
 void BitBoard :: initVariables()
