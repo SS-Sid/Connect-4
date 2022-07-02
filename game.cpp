@@ -1,9 +1,86 @@
 #include <iostream>
 #include "game.hpp"
 
-const int MAX_DEPTH = 10;
+// PUBLIC FUNCTIONS
+
+Game :: Game()
+{
+    std::cout << "WELCOME TO CONNECT-4" << std::endl;
+    this->initGameType();
+    this->render();
+}
+
+
+Game :: ~Game()
+{
+    //
+}
+
+
+bool Game :: isGameRunning()
+{
+    return !(board.isWin() || board.isTied());
+}
+
+
+void Game :: update()
+{
+    std::cout << "MOVE :: " << board.getMove() << std::endl;
+    if (board.getMove() & 1)
+    {
+        if (gameType == 2)
+        {
+            aiMove();
+        }
+        else
+        {
+            manualMove();
+        }
+    }
+    else
+    {
+        if (gameType == 0)
+        {
+            manualMove();
+        }
+        else
+        {
+            aiMove();
+        }
+    }
+    board.switchPlayers();
+
+    return;
+}
+
+
+void Game :: render()
+{
+    this->board.printBitBoard();
+    this->board.printBoard();
+    this->board.printMoveHistory();
+    return;
+}
+
+
+void Game :: endGame()
+{
+    std::cout << "GAME OVER" << std::endl;
+    if (board.isWin())
+    {
+        //since player switches after a move is made.
+        std::cout << board.oppPlayer << std::endl;
+    }
+    else
+    {
+        std::cout << "TIE" << std::endl;
+    }
+    return;
+}
+
 
 // PRIVATE FUNCTIONS
+
 
 void Game :: initGameType()
 {
@@ -30,6 +107,7 @@ void Game :: initGameType()
     return;
 }
 
+
 int Game :: manualChoice()
 {
     bool accepted = false;
@@ -55,6 +133,7 @@ int Game :: manualChoice()
     return col - 1;
 }
 
+
 void Game :: manualMove()
 {
     int col = manualChoice();
@@ -62,7 +141,8 @@ void Game :: manualMove()
     return;
 }
 
-int bestCol = -1;
+
+// int bestCol = -1;
 
 //COMMENTED PART IS FOR TRANSPOSTION TABLE IMPLEMENTATION
 int Game :: negamax(BitBoard board, int initCol, bool maximizer, int depth, int alpha, int beta)
@@ -125,12 +205,12 @@ int Game :: negamax(BitBoard board, int initCol, bool maximizer, int depth, int 
                         alpha = score;
                         if (depth == 0)
                         {
-                            bestCol = j;
+                            this->bestCol = j;
                         }
                     }
                     if (depth == 0)
                     {
-                        std::cout << bestCol << " " << j << " " << score << std::endl;
+                        std::cout << this->bestCol << " " << j << " " << score << std::endl;
                     }
                 }
             }
@@ -141,85 +221,15 @@ int Game :: negamax(BitBoard board, int initCol, bool maximizer, int depth, int 
     return score;
 }
 
+
 void Game :: aiMove()
 {
     std::cout << "Computer moving..." << std::endl;
-    bestCol = -1;
+    this->bestCol = -1;
     BitBoard p_Board = board;
     p_Board.switchPlayers();
     negamax(p_Board, 0, true, 0, -1000, 1000);
-    board.playMove(bestCol);
+    board.playMove(this->bestCol);
     return;
 }
 
-// PUBLIC FUNCTIONS
-
-Game :: Game()
-{
-    std::cout << "WELCOME TO CONNECT-4" << std::endl;
-    this->initGameType();
-    this->render();
-}
-
-Game :: ~Game()
-{
-    //
-}
-
-bool Game :: isGameRunning()
-{
-    return !(board.isWin() || board.isTied());
-}
-
-void Game :: update()
-{
-    std::cout << "MOVE :: " << board.getMove() << std::endl;
-    if (board.getMove() & 1)
-    {
-        if (gameType == 2)
-        {
-            aiMove();
-        }
-        else
-        {
-            manualMove();
-        }
-    }
-    else
-    {
-        if (gameType == 0)
-        {
-            manualMove();
-        }
-        else
-        {
-            aiMove();
-        }
-    }
-    board.switchPlayers();
-
-    return;
-}
-
-void Game :: render()
-{
-    this->board.printBitBoard();
-    this->board.printBoard();
-    this->board.printMoveHistory();
-    return;
-}
-
-void Game :: endGame()
-{
-    std::cout << "GAME OVER" << std::endl;
-    if (board.isWin())
-    {
-        //since player switches after a move is made.
-        std::cout << board.oppPlayer << std::endl;
-    }
-    else
-    {
-        std::cout << "TIE" << std::endl;
-    }
-    return;
-}

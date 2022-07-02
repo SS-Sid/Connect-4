@@ -2,34 +2,13 @@
 #include <math.h>
 #include "board.hpp"
 
-//PRIVATE FUNCTIONS
-void BitBoard :: initVariables()
-{
-    this->currentPosition = 0;
-    this->mask = 0;
-    this->bottomMask = 0;
-    for (int j = 0; j < COLS; j++)
-    {
-        bottomMask += (UINT64_C(1) << (j * (ROWS+1)));
-        emptyOne[j] = ROWS;
-        
-        for (int i = 0; i < ROWS; i++)
-        {
-            moveHistory[j*COLS + i] = -1;
-        }
-    }
-    this->move = 1;
-    this->currentPlayer = 'O';
-    this->oppPlayer = 'X';
-    return;
-}
-
 
 //PUBLIC FUNCTIONS
 BitBoard :: BitBoard()
 {
     this->initVariables();
 }
+
 
 BitBoard :: ~BitBoard()
 {
@@ -42,6 +21,7 @@ int BitBoard :: getBit(uint64_t num, int k)
     uint64_t mask = UINT64_C(1) << k;
     return ((num & mask) >> k);
 }
+
 
 uint64_t BitBoard :: getKey()
 {
@@ -73,6 +53,7 @@ void BitBoard :: printBitBoard()
 
     return;
 }
+
 
 void BitBoard :: printBoard()
 {   
@@ -111,6 +92,7 @@ void BitBoard :: printBoard()
     return;
 }
 
+
 void BitBoard :: printMoveHistory()
 {
     if (this->move > 1)
@@ -143,10 +125,12 @@ void BitBoard :: switchPlayers()
     return;
 }
 
+
 int BitBoard :: getMove()
 {
     return move;
 }
+
 
 bool BitBoard :: isPlayable(int col)
 {
@@ -166,11 +150,12 @@ void BitBoard :: playMove(int col)
     moveHistory[move - 1] = col;
     move++;
 
-    int player = (currentPlayer == 'O' ? 0 : 1);
+    // int player = (currentPlayer == 'O' ? 0 : 1);
     // tt.zobHash.zobKey ^= tt.zobHash.ZobristTable[col][ROWS - emptyOne[col]][player];
 
     return;
 }
+
 
 void BitBoard :: unPlayMove(int col)
 {
@@ -182,50 +167,13 @@ void BitBoard :: unPlayMove(int col)
     moveHistory[move - 1] = -1;
     move--;
 
-    int player = (currentPlayer == 'O' ? 0 : 1);
+    // int player = (currentPlayer == 'O' ? 0 : 1);
     // tt.zobHash.zobKey ^= tt.zobHash.ZobristTable[col][ROWS - emptyOne[col] - 1][player];
 
     switchPlayers();
     return;
 }
 
-
-int BitBoard :: countPieces(uint64_t pos)
-{
-    int count = 0;
-
-    while (pos)
-    {
-        if (pos & 1)
-        {
-            count++;
-        }
-        pos >>= 1;
-    }
-
-    return count;
-}
-
-int BitBoard :: getScore(int linesCount[2][TARGET/2])
-{
-    int score = 0;
-    int factorVal = 0;
-
-    for (int i = 0; i < 2; i++)
-    {
-        factorVal = TARGET + 1;
-        factorVal <<= 1;
-
-        for (int j = 0; j < TARGET/2; j++)
-        {
-            factorVal >>= 1;
-            // 1-2i => 1, -1 for 0, 1 and score += for i=0 && score -= for i=1
-            score += linesCount[i][j] * factorVal * (1 - (2*i));
-        }
-    }
-    
-    return score;
-}
 
 int BitBoard :: evalBoard(bool maximizer)
 {
@@ -273,10 +221,10 @@ int BitBoard :: evalBoard(bool maximizer)
     score = getScore(linesCount);
 
     //find who is maximizing player and change score;
-    int player = (currentPlayer == 'O' ? 1 : -1);
+    int player = (currentPlayer == 'O' ? -1 : 1);
     int maximizerInt = (maximizer == true ? 1 : -1);
     
-    score *= -(player * maximizerInt);
+    score *= (player * maximizerInt);
 
 
     // player = maximizing player
@@ -329,3 +277,67 @@ bool BitBoard :: isTied()
 {
     return ((move - 1) == (ROWS * COLS));
 }
+
+
+//PRIVATE FUNCTIONS
+
+void BitBoard :: initVariables()
+{
+    this->currentPosition = 0;
+    this->mask = 0;
+    this->bottomMask = 0;
+    for (int j = 0; j < COLS; j++)
+    {
+        bottomMask += (UINT64_C(1) << (j * (ROWS+1)));
+        emptyOne[j] = ROWS;
+        
+        for (int i = 0; i < ROWS; i++)
+        {
+            moveHistory[j*COLS + i] = -1;
+        }
+    }
+    this->move = 1;
+    this->currentPlayer = 'O';
+    this->oppPlayer = 'X';
+    return;
+}
+
+
+int BitBoard :: countPieces(uint64_t pos)
+{
+    int count = 0;
+
+    while (pos)
+    {
+        if (pos & 1)
+        {
+            count++;
+        }
+        pos >>= 1;
+    }
+
+    return count;
+}
+
+
+int BitBoard :: getScore(int linesCount[2][TARGET/2])
+{
+    int score = 0;
+    int factorVal = 0;
+
+    for (int i = 0; i < 2; i++)
+    {
+        factorVal = TARGET + 1;
+        factorVal <<= 1;
+
+        for (int j = 0; j < TARGET/2; j++)
+        {
+            factorVal >>= 1;
+            // 1-2i => 1, -1 for 0, 1 and score += for i=0 && score -= for i=1
+            score += linesCount[i][j] * factorVal * (1 - (2*i));
+        }
+    }
+    
+    return score;
+}
+

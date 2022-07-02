@@ -10,34 +10,6 @@ const int TARGET = 4;
 
 class BitBoard
 {
-private:
-    // PRIVATE VARIABLES
-    
-    // horizontal, vertical, majorDiagonal, minorDiagonal
-    int directions[4] = {ROWS + 1, 1, ROWS, ROWS + 2};
-
-    // board representation for current player occupied cells
-    uint64_t currentPosition;
-    
-    // board representation for all occupied cells
-    uint64_t mask;
-    
-    // bottom Mask
-    uint64_t bottomMask;
-    
-    // idx for value 1 depicting empty cell;
-    int emptyOne[COLS];
-    
-    int moveHistory[ROWS*COLS];
-    int move;
-
-    // PRIVATE FUNCTIONS
-
-    void initVariables();
-    int countPieces(uint64_t pos);
-    int getScore(int linesCount[2][TARGET/2]);
-
-
 public:
     // PUBLIC VARIABLES
     // TranspositionTable tt;
@@ -74,6 +46,37 @@ public:
     int evalBoard(bool maximizer);
     bool isWin();
     bool isTied();
+
+
+private:
+    // PRIVATE VARIABLES
+    
+    // horizontal, vertical, majorDiagonal, minorDiagonal
+    int directions[4] = {ROWS + 1, 1, ROWS, ROWS + 2};
+
+    // board representation for current player occupied cells
+    uint64_t currentPosition;
+    
+    // board representation for all occupied cells
+    uint64_t mask;
+    
+    // bottom Mask
+    uint64_t bottomMask;
+    
+    // idx for value 1 depicting empty cell;
+    int emptyOne[COLS];
+    
+    int moveHistory[ROWS*COLS];
+    int move;
+
+    // PRIVATE FUNCTIONS
+
+    void initVariables();
+    int countPieces(uint64_t pos);
+    int getScore(int linesCount[2][TARGET/2]);
+
+
+
 };
 
 #endif

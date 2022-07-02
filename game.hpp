@@ -3,20 +3,10 @@
 
 #include "board.hpp"
 
+const int MAX_DEPTH = 10;
+
 class Game
 {
-private:
-    // PRIVATE VARIABLES
-    int gameType;
-    BitBoard board;
-
-    // PRIVATE FUNCTIONS
-    void initGameType();
-    int manualChoice();
-    void manualMove();
-    int negamax(BitBoard board, int initCol, bool maximizer, int depth, int alpha, int beta);
-    void aiMove();
-
 public:
     //PUBLIC VARIABLES
 
@@ -29,6 +19,19 @@ public:
     void render();
     void endGame();
 
+
+private:
+    // PRIVATE VARIABLES
+    int gameType;
+    BitBoard board;
+    int bestCol;
+
+    // PRIVATE FUNCTIONS
+    void initGameType();
+    int manualChoice();
+    void manualMove();
+    int negamax(BitBoard board, int initCol, bool maximizer, int depth, int alpha, int beta);
+    void aiMove();
 };
 
 #endif
