@@ -32,7 +32,11 @@ private:
     int manualChoice();
     void manualMove();
 
-    int negamax(BitBoard p_board, int initCol, int depth, int alpha, int beta);
+
+    int negamax(BitBoard p_board, int initCol, int depth);
+    int alphaBeta(BitBoard p_board, int initCol, int depth, int alpha, int beta);
+    int principalVariation(BitBoard p_board, int initCol, int depth, int alpha, int beta);
+
     void aiMove();
 };
 

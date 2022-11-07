@@ -1,7 +1,6 @@
 #ifndef BOARD_H
 #define BOARD_H
 
-// #include "transpositionTable.h"
 #include <cstdint>
 
 const int ROWS = 6;
