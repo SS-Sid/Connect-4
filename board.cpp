@@ -32,7 +32,7 @@ uint64_t BitBoard :: getKey()
 
 void BitBoard :: printBitBoard()
 {
-    uint64_t key = currentPosition ^ mask;
+    uint64_t key = currentPosition;// ^ mask;
     int shiftFactor;
     
     for (int j = 0; j <= ROWS; j++)
@@ -65,7 +65,7 @@ void BitBoard :: printBoard()
         std::cout << j << "| ";
         for (int i = 0; i < COLS; i++)
         {
-            shiftFactor = (i * COLS) + (ROWS - j);
+            shiftFactor = (i * this->directions[0]) + (ROWS - j);
             if (j <= emptyOne[i])
             {
                 std::cout << '_' << " | ";
@@ -102,7 +102,7 @@ void BitBoard :: printMoveHistory()
         //so move - 2 is last index to be printed
         for (int i = 0; i < move - 1; i++)
         {
-            std::cout << moveHistory[i] << " ";
+            std::cout << moveHistory[i] + 1 << " ";
         }
         std::cout << std::endl;
     }
@@ -179,7 +179,7 @@ int BitBoard :: evalBoard(bool maximizer)
 {
     int score = 0;
 
-    int linesCount[2][TARGET / 2];
+    int linesCount[2][TARGET / 2] = {0};
     int idx;
     int pieceCount, oppPieceCount;
     //for each direction
@@ -197,9 +197,9 @@ int BitBoard :: evalBoard(bool maximizer)
         }
 
         pieceCount = countPieces(pos);
-        linesCount[0][idx] = pieceCount;
+        linesCount[0][idx] += pieceCount;
         oppPieceCount = countPieces(oppPos);
-        linesCount[1][idx] = oppPieceCount;
+        linesCount[1][idx] += oppPieceCount;
         
         //store number of x-in a direction
         while (idx < TARGET / 2)
@@ -212,8 +212,8 @@ int BitBoard :: evalBoard(bool maximizer)
             oppPieceCount = countPieces(oppPos);
             linesCount[1][idx] -= oppPieceCount;
 
-            linesCount[0][++idx] = pieceCount;
-            linesCount[1][idx] = oppPieceCount;
+            linesCount[0][++idx] += pieceCount;
+            linesCount[1][idx] += oppPieceCount;
         }
     }
     //now lineCount stores all posssible x in a row
@@ -221,35 +221,12 @@ int BitBoard :: evalBoard(bool maximizer)
     score = getScore(linesCount);
 
     //find who is maximizing player and change score;
-    int player = (currentPlayer == 'O' ? -1 : 1);
-    int maximizerInt = (maximizer == true ? 1 : -1);
+    // ** COMMENTED CODE (POSSIBLY WRONG IN PREV. VER) **
+    // int player = (currentPlayer == 'O' ? -1 : 1);
+    // int maximizerInt = (maximizer == true ? -1 : 1);
     
-    score *= (player * maximizerInt);
-
-
-    // player = maximizing player
-    // if (maximizer == true && player == -1)
-    // {
-    //     player = 1;
-    // }
-    // else if (maximizer == true && player == 1)
-    // {
-    //     player = -1;
-    // }
-    // else if (maximizer == false && player == 1)
-    // {
-    //     player = 1;
-    // }
-    // else if (maximizer == false && player == -1)
-    // {
-    //     player = -1;
-    // }
-
-    
-    // if (player != 1)
-    // {
-    //     score *= -1;
-    // }
+    // score *= (player * maximizerInt);
+    score *= -1; // ** SOLUTION FOR COMMNETED CODE **
     
     return score;
 }

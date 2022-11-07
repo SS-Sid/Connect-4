@@ -167,10 +167,6 @@ int Game :: negamax(BitBoard board, int initCol, bool maximizer, int depth, int 
     else if (depth == MAX_DEPTH)
     {
         score += board.evalBoard(maximizer);
-        if (!maximizer)
-        {
-            score *= -1;
-        }
         // board.tt.recordHashElement(depth, score, bestCol, HASH_EXACT);
     }
     else
@@ -210,7 +206,7 @@ int Game :: negamax(BitBoard board, int initCol, bool maximizer, int depth, int 
                     }
                     if (depth == 0)
                     {
-                        std::cout << this->bestCol << " " << j << " " << score << std::endl;
+                        std::cout << this->bestCol + 1 << " " << j + 1 << " " << score << std::endl;
                     }
                 }
             }
