@@ -25,14 +25,14 @@ int BitBoard :: getBit(uint64_t num, int k)
 
 uint64_t BitBoard :: getKey()
 {
-    uint64_t key = currentPosition + mask + bottomMask;
+    uint64_t key = this->currentPosition + this->mask + this->bottomMask;
     return key;
 }
 
 
 void BitBoard :: printBitBoard()
 {
-    uint64_t key = currentPosition;// ^ mask;
+    uint64_t key = this->currentPosition;
     int shiftFactor;
     
     for (int j = 0; j <= ROWS; j++)
@@ -40,7 +40,7 @@ void BitBoard :: printBitBoard()
         for (int i = 0; i < COLS; i++)
         {
             shiftFactor = (i * COLS) + (ROWS - j);
-            std::cout << getBit(key, shiftFactor) << " ";
+            std::cout << this->getBit(key, shiftFactor) << " ";
         }
         std::cout << std::endl;
     }
@@ -57,7 +57,7 @@ void BitBoard :: printBitBoard()
 
 void BitBoard :: printBoard()
 {   
-    uint64_t key = getKey();
+    uint64_t key = this->getKey();
     int shiftFactor;
     
     for (int j = 1; j <= ROWS; j++)
@@ -65,19 +65,19 @@ void BitBoard :: printBoard()
         std::cout << j << "| ";
         for (int i = 0; i < COLS; i++)
         {
-            shiftFactor = (i * this->directions[0]) + (ROWS - j);
-            if (j <= emptyOne[i])
+            shiftFactor = ((i) * this->directions[0]) + ((ROWS - j) * this->directions[1]);
+            if (j <= this->emptyOne[i])
             {
                 std::cout << '_' << " | ";
             }
-            else if (getBit(key, shiftFactor) == 1)
+            else if (this->getBit(key, shiftFactor) == 1)
             {
                 //since player switch before rendering
-                std::cout << oppPlayer << " | ";
+                std::cout << this->oppPlayer << " | ";
             }
             else
             {
-                std::cout << currentPlayer << " | ";
+                std::cout << this->currentPlayer << " | ";
             }
         }
         std::cout << std::endl;
@@ -100,9 +100,9 @@ void BitBoard :: printMoveHistory()
         std::cout << "Moves Played :: ";
         //since rendering after a move, hence move increases
         //so move - 2 is last index to be printed
-        for (int i = 0; i < move - 1; i++)
+        for (int i = 0; i < this->move - 1; i++)
         {
-            std::cout << moveHistory[i] + 1 << " ";
+            std::cout << this->moveHistory[i] + 1 << " ";
         }
         std::cout << std::endl;
     }
@@ -112,15 +112,15 @@ void BitBoard :: printMoveHistory()
 
 void BitBoard :: switchPlayers()
 {
-    if (currentPlayer == 'O')
+    if (this->currentPlayer == 'O')
     {
-        currentPlayer = 'X';
-        oppPlayer = 'O';
+        this->currentPlayer = 'X';
+        this->oppPlayer = 'O';
     }
     else
     {
-        currentPlayer = 'O';
-        oppPlayer = 'X';
+        this->currentPlayer = 'O';
+        this->oppPlayer = 'X';
     }
     return;
 }
@@ -128,30 +128,24 @@ void BitBoard :: switchPlayers()
 
 int BitBoard :: getMove()
 {
-    return move;
+    return this->move;
 }
 
 
 bool BitBoard :: isPlayable(int col)
 {
-    return (emptyOne[col] > 0);
-    // uint64_t key = getKey();
-    // int shiftFactor = ((col + 1) * (ROWS + 1)) - 1;
-    // return (getBit(key, shiftFactor) == 0);
+    return (col > -1 && col < COLS && this->emptyOne[col] > 0);
 }
 
 
 void BitBoard :: playMove(int col)
 {
-    int shiftFactor = (col * (ROWS + 1)) + (ROWS - emptyOne[col]);
-    mask |= (UINT64_C(1) << shiftFactor);
-    currentPosition ^= mask;
-    emptyOne[col]--;
-    moveHistory[move - 1] = col;
-    move++;
-
-    // int player = (currentPlayer == 'O' ? 0 : 1);
-    // tt.zobHash.zobKey ^= tt.zobHash.ZobristTable[col][ROWS - emptyOne[col]][player];
+    int shiftFactor = ((col) * this->directions[0]) + ((ROWS - this->emptyOne[col]) * this->directions[1]);
+    this->mask |= (UINT64_C(1) << shiftFactor);
+    this->currentPosition ^= this->mask;
+    this->emptyOne[col]--;
+    this->moveHistory[this->move - 1] = col;
+    this->move++;
 
     return;
 }
@@ -159,23 +153,20 @@ void BitBoard :: playMove(int col)
 
 void BitBoard :: unPlayMove(int col)
 {
-    int shiftFactor = (col * (ROWS + 1)) +  (ROWS - emptyOne[col] - 1);
-    mask ^= (UINT64_C(1) << shiftFactor);
-    currentPosition ^= (UINT64_C(1) << shiftFactor);
-    currentPosition ^= mask;
-    emptyOne[col]++;
-    moveHistory[move - 1] = -1;
-    move--;
+    int shiftFactor = ((col) * this->directions[0]) +  ((ROWS - this->emptyOne[col] - 1) * this->directions[1]);
+    this->mask ^= (UINT64_C(1) << shiftFactor);
+    this->currentPosition ^= (UINT64_C(1) << shiftFactor);
+    this->currentPosition ^= this->mask;
+    this->emptyOne[col]++;
+    this->moveHistory[move - 1] = -1;
+    this->move--;
 
-    // int player = (currentPlayer == 'O' ? 0 : 1);
-    // tt.zobHash.zobKey ^= tt.zobHash.ZobristTable[col][ROWS - emptyOne[col] - 1][player];
-
-    switchPlayers();
+    this->switchPlayers();
     return;
 }
 
 
-int BitBoard :: evalBoard(bool maximizer)
+int BitBoard :: evalBoard()
 {
     int score = 0;
 
@@ -185,15 +176,15 @@ int BitBoard :: evalBoard(bool maximizer)
     //for each direction
     for (int i = 0; i < 4; i++)
     {
-        uint64_t pos = currentPosition;
-        uint64_t oppPos = currentPosition ^ mask;
+        uint64_t pos = this->currentPosition;
+        uint64_t oppPos = this->currentPosition ^ this->mask;
         idx = 0;
         
         //shift to ensure atleast TARGET / 2 in a direction
         for (int j = 1; j < TARGET / 2; j++)
         {
-            pos = pos & (pos >> directions[i]);
-            oppPos = oppPos & (oppPos >> directions[i]);
+            pos = pos & (pos >> this->directions[i]);
+            oppPos = oppPos & (oppPos >> this->directions[i]);
         }
 
         pieceCount = countPieces(pos);
@@ -204,11 +195,11 @@ int BitBoard :: evalBoard(bool maximizer)
         //store number of x-in a direction
         while (idx < TARGET / 2)
         {
-            pos = pos & (pos >> directions[i]);
+            pos = pos & (pos >> this->directions[i]);
             pieceCount = countPieces(pos);
             linesCount[0][idx] -= pieceCount;
 
-            oppPos = oppPos & (oppPos >> directions[i]);
+            oppPos = oppPos & (oppPos >> this->directions[i]);
             oppPieceCount = countPieces(oppPos);
             linesCount[1][idx] -= oppPieceCount;
 
@@ -217,16 +208,10 @@ int BitBoard :: evalBoard(bool maximizer)
         }
     }
     //now lineCount stores all posssible x in a row
-    //generate static linear evaluation formula
-    score = getScore(linesCount);
-
-    //find who is maximizing player and change score;
-    // ** COMMENTED CODE (POSSIBLY WRONG IN PREV. VER) **
-    // int player = (currentPlayer == 'O' ? -1 : 1);
-    // int maximizerInt = (maximizer == true ? -1 : 1);
-    
-    // score *= (player * maximizerInt);
-    score *= -1; // ** SOLUTION FOR COMMNETED CODE **
+    //generate evaluation formula relative to currentPlayer
+    //independent to 'O' or 'X' or maximizer
+    score = this->getScore(linesCount);
+    score *= -1; // inverted score is needed to be propagated
     
     return score;
 }
@@ -236,10 +221,10 @@ bool BitBoard :: isWin()
 {
     for (int i = 0; i < 4; i++)
     {
-        uint64_t pos = currentPosition;
+        uint64_t pos = this->currentPosition;
         for (int j = 1; j < TARGET; j++)
         {
-            pos = pos & (pos >> directions[i]);
+            pos = pos & (pos >> this->directions[i]);
         }
         if (pos != 0)
         {
@@ -252,7 +237,7 @@ bool BitBoard :: isWin()
 
 bool BitBoard :: isTied()
 {
-    return ((move - 1) == (ROWS * COLS));
+    return ((this->move - 1) == (ROWS * COLS));
 }
 
 
@@ -265,12 +250,12 @@ void BitBoard :: initVariables()
     this->bottomMask = 0;
     for (int j = 0; j < COLS; j++)
     {
-        bottomMask += (UINT64_C(1) << (j * (ROWS+1)));
-        emptyOne[j] = ROWS;
+        this->bottomMask += (UINT64_C(1) << (j * (ROWS+1)));
+        this->emptyOne[j] = ROWS;
         
         for (int i = 0; i < ROWS; i++)
         {
-            moveHistory[j*COLS + i] = -1;
+            this->moveHistory[j*COLS + i] = -1;
         }
     }
     this->move = 1;

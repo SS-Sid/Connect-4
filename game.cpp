@@ -19,36 +19,36 @@ Game :: ~Game()
 
 bool Game :: isGameRunning()
 {
-    return !(board.isWin() || board.isTied());
+    return !(this->board.isWin() || this->board.isTied());
 }
 
 
 void Game :: update()
 {
-    std::cout << "MOVE :: " << board.getMove() << std::endl;
-    if (board.getMove() & 1)
+    std::cout << "MOVE :: " << this->board.getMove() << std::endl;
+    if (this->board.getMove() & 1)
     {
-        if (gameType == 2)
+        if (this->gameType == 2)
         {
-            aiMove();
+            this->aiMove();
         }
         else
         {
-            manualMove();
+            this->manualMove();
         }
     }
     else
     {
-        if (gameType == 0)
+        if (this->gameType == 0)
         {
-            manualMove();
+            this->manualMove();
         }
         else
         {
-            aiMove();
+            this->aiMove();
         }
     }
-    board.switchPlayers();
+    this->board.switchPlayers();
 
     return;
 }
@@ -66,10 +66,10 @@ void Game :: render()
 void Game :: endGame()
 {
     std::cout << "GAME OVER" << std::endl;
-    if (board.isWin())
+    if (this->board.isWin())
     {
         //since player switches after a move is made.
-        std::cout << board.oppPlayer << std::endl;
+        std::cout << this->board.oppPlayer << std::endl;
     }
     else
     {
@@ -112,7 +112,7 @@ int Game :: manualChoice()
 {
     bool accepted = false;
     int col;
-    while (accepted == false || !board.isPlayable(col - 1))
+    while (accepted == false || !this->board.isPlayable(col - 1))
     {
         std::cout << "Select Column Number :: ";
         std::cin >> col;
@@ -124,7 +124,7 @@ int Game :: manualChoice()
             }
         }
         
-        if (accepted == false || !board.isPlayable(col - 1))
+        if (accepted == false || !this->board.isPlayable(col - 1))
         {
             std::cout << "Invalid Input!!" << std::endl;
             accepted = false;
@@ -136,42 +136,29 @@ int Game :: manualChoice()
 
 void Game :: manualMove()
 {
-    int col = manualChoice();
-    board.playMove(col);
+    int col = this->manualChoice();
+    this->board.playMove(col);
     return;
 }
-
-
-// int bestCol = -1;
-
-//COMMENTED PART IS FOR TRANSPOSTION TABLE IMPLEMENTATION
-int Game :: negamax(BitBoard board, int initCol, bool maximizer, int depth, int alpha, int beta)
+int Game :: negamax(BitBoard p_board, int initCol, int depth, int alpha, int beta)
 {
     int score = 0;
 
-    // int hashFlag = HASH_ALPHA;
-    // if ((score = board.tt.probeHashElement(depth, alpha, beta)) != INT_MIN)
-    // {
-    //     return score;
-    // }
-    
-    // score = 0;
-    if (board.isWin())
+    if (p_board.isWin())
     {
         score -= ROWS*COLS - depth;
     }
-    else if (board.isTied())
+    else if (p_board.isTied())
     {
         score += 0;
     }
     else if (depth == MAX_DEPTH)
     {
-        score += board.evalBoard(maximizer);
-        // board.tt.recordHashElement(depth, score, bestCol, HASH_EXACT);
+        score += p_board.evalBoard();
     }
     else
     {
-        board.switchPlayers();
+        p_board.switchPlayers();
         for (int i = 0; i <= COLS/2; i++)
         {
             for (int j = COLS/2 - i; j <= COLS/2 + i; j += (i==0) ? 1 : 2*i)
@@ -181,23 +168,21 @@ int Game :: negamax(BitBoard board, int initCol, bool maximizer, int depth, int 
                     initCol = j;
                 }
 
-                if (board.isPlayable(j))
+                if (p_board.isPlayable(j))
                 {
-                    board.playMove(j);
+                    p_board.playMove(j);
                     ++depth;
-                    BitBoard newBoard = board;
-                    score = -negamax(newBoard, initCol, !maximizer, depth, -beta, -alpha);
+                    BitBoard newBoard = p_board;
+                    score = - this->negamax(newBoard, initCol, depth, -beta, -alpha);
                     --depth;
-                    board.unPlayMove(j);
+                    p_board.unPlayMove(j);
 
                     if (beta <= score)
                     {
-                        // board.tt.recordHashElement(depth, score, bestCol, HASH_BETA);
                         return beta;
                     }
                     if (alpha < score)
                     {
-                        // hashFlag = HASH_EXACT;
                         alpha = score;
                         if (depth == 0)
                         {
@@ -211,7 +196,6 @@ int Game :: negamax(BitBoard board, int initCol, bool maximizer, int depth, int 
                 }
             }
         }
-        // board.tt.recordHashElement(depth, score, bestCol, hashFlag);
         return alpha;
     }
     return score;
@@ -222,10 +206,10 @@ void Game :: aiMove()
 {
     std::cout << "Computer moving..." << std::endl;
     this->bestCol = -1;
-    BitBoard p_Board = board;
+    BitBoard p_Board = this->board;
     p_Board.switchPlayers();
-    negamax(p_Board, 0, true, 0, -1000, 1000);
-    board.playMove(this->bestCol);
+    this->negamax(p_Board, 0, 0, -1000, 1000);
+    this->board.playMove(this->bestCol);
     return;
 }
 

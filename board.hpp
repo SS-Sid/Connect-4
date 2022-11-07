@@ -43,7 +43,7 @@ public:
     void playMove(int col);
     void unPlayMove(int col);
 
-    int evalBoard(bool maximizer);
+    int evalBoard();
     bool isWin();
     bool isTied();
 

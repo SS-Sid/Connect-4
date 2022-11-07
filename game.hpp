@@ -28,9 +28,11 @@ private:
 
     // PRIVATE FUNCTIONS
     void initGameType();
+
     int manualChoice();
     void manualMove();
-    int negamax(BitBoard board, int initCol, bool maximizer, int depth, int alpha, int beta);
+
+    int negamax(BitBoard p_board, int initCol, int depth, int alpha, int beta);
     void aiMove();
 };
 
