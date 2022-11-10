@@ -373,8 +373,8 @@ void Game :: aiMove()
     this->board.playMove(this->bestCol);
 
     std::cout << "\tNODE COUNT::" << this->nodeCount << std::endl;
-    std::chrono::duration<double> elapsed_seconds = end - start;
-    std::cout << "\telapsed time: " << elapsed_seconds.count() << "s\n";
+    std::chrono::duration<double, std::milli> elapsed_seconds = end - start;
+    std::cout << "\telapsed time: " << elapsed_seconds.count() << "ms\n";
     
     return;
 }
