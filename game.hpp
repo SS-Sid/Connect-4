@@ -2,8 +2,7 @@
 #define GAME_H
 
 #include "board.hpp"
-
-const int MAX_DEPTH = 10;
+#include "ai_util.hpp"
 
 class Game
 {
@@ -24,8 +23,6 @@ private:
     // PRIVATE VARIABLES
     int gameType;
     BitBoard board;
-    int bestCol;
-    int nodeCount;
 
     // PRIVATE FUNCTIONS
     void initGameType();
@@ -33,11 +30,7 @@ private:
     int manualChoice();
     void manualMove();
 
-
-    int negamax(BitBoard p_board, int initCol, int depth);
-    int alphaBeta(BitBoard p_board, int initCol, int depth, int alpha, int beta);
-    int principalVariation(BitBoard p_board, int initCol, int depth, int alpha, int beta);
-
+    int aiChoice();
     void aiMove();
 };
 
