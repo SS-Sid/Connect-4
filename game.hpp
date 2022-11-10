@@ -25,6 +25,7 @@ private:
     int gameType;
     BitBoard board;
     int bestCol;
+    int nodeCount;
 
     // PRIVATE FUNCTIONS
     void initGameType();

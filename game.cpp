@@ -1,4 +1,5 @@
 #include <iostream>
+#include <chrono>
 #include "game.hpp"
 
 // PUBLIC FUNCTIONS
@@ -147,6 +148,7 @@ void Game :: manualMove()
 int Game :: negamax(BitBoard p_board, int initCol, int depth)
 {
     int score = 0;
+    this->nodeCount += 1;
 
     if (p_board.isWin())
     {
@@ -209,6 +211,7 @@ int Game :: negamax(BitBoard p_board, int initCol, int depth)
 int Game :: alphaBeta(BitBoard p_board, int initCol, int depth, int alpha, int beta)
 {
     int score = 0;
+    this->nodeCount += 1;
 
     if (p_board.isWin())
     {
@@ -274,6 +277,7 @@ int Game :: alphaBeta(BitBoard p_board, int initCol, int depth, int alpha, int b
 int Game :: principalVariation(BitBoard p_board, int initCol, int depth, int alpha, int beta)
 {
     int score = 0;
+    this->nodeCount += 1;
 
     if (p_board.isWin())
     {
@@ -355,14 +359,23 @@ void Game :: aiMove()
 {
     std::cout << "Computer moving..." << std::endl;
     this->bestCol = -1;
+    this->nodeCount = -1;
     BitBoard p_Board = this->board;
 
     p_Board.switchPlayers();
+    std::chrono::time_point<std::chrono::system_clock> start, end;
+    start = std::chrono::system_clock::now();
     // this->negamax(p_Board, 0, 0);
-    this->alphaBeta(p_Board, 0, 0, -1000, 1000); // -INF, +INF
-    // this->principalVariation(p_Board, 0, 0, -1000, 1000); // -INF, +INF
+    // this->alphaBeta(p_Board, 0, 0, -1000, 1000); // -INF, +INF
+    this->principalVariation(p_Board, 0, 0, -1000, 1000); // -INF, +INF
+    end = std::chrono::system_clock::now();
     
     this->board.playMove(this->bestCol);
+
+    std::cout << "\tNODE COUNT::" << this->nodeCount << std::endl;
+    std::chrono::duration<double> elapsed_seconds = end - start;
+    std::cout << "\telapsed time: " << elapsed_seconds.count() << "s\n";
+    
     return;
 }
 
