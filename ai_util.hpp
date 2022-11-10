@@ -8,6 +8,7 @@ class algorithms_ai
 {
 public:
     algorithms_ai(BitBoard p_board, int depth);
+    ~algorithms_ai();
 
     int negamax();
     int alphaBeta();

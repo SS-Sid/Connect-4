@@ -145,11 +145,13 @@ void Game :: manualMove()
 
 int Game :: aiChoice()
 {
-    algorithms_ai aiUtil(this->board, 10); // 10 = MAX_DEPTH
-    
-    int col = aiUtil.negamax();
-    // aiUtil.alphaBeta();
-    // aiUtil.principalVariation();
+    BitBoard p_board = this->board;
+    p_board.switchPlayers();
+
+    algorithms_ai aiUtil(p_board, 10); // 10 = MAX_DEPTH
+    // int col = aiUtil.negamax();
+    // int col = aiUtil.alphaBeta();
+    int col = aiUtil.principalVariation();
 
     return col;
 }

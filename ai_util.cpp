@@ -11,12 +11,18 @@ algorithms_ai :: algorithms_ai(BitBoard p_board, int depth)
 }
 
 
+algorithms_ai :: ~algorithms_ai()
+{
+    //
+}
+
+
 int algorithms_ai :: negamax()
 {
     this->bestCol = -1;
     this->nodeCount = -1;
     
-    this->negamax_util(this->ai_board, this->maxDepth);
+    this->negamax_util(this->ai_board, 0);
 
     return this->bestCol;
 }
@@ -27,7 +33,7 @@ int algorithms_ai :: alphaBeta()
     this->bestCol = -1;
     this->nodeCount = -1;
     
-    this->alphaBeta_util(this->ai_board, this->maxDepth, -1e9, +1e9);
+    this->alphaBeta_util(this->ai_board, 0, -1e9, +1e9);
 
     return this->bestCol;
 }
@@ -38,7 +44,7 @@ int algorithms_ai :: principalVariation()
     this->bestCol = -1;
     this->nodeCount = -1;
     
-    this->principalVariation_util(this->ai_board, this->maxDepth, -1e9, +1e9);
+    this->principalVariation_util(this->ai_board, 0, -1e9, +1e9);
 
     return this->bestCol;
 }
@@ -75,12 +81,6 @@ int algorithms_ai :: negamax_util(BitBoard p_board, int depth)
         {
             for (int j = COLS/2 - i; j <= COLS/2 + i; j += (i==0) ? 1 : 2*i)
             {
-                // if (depth == 0)
-                // {
-                //     this->bestCol = -1;
-                //     this->nodeCount = 0;
-                // }
-
                 if (p_board.isPlayable(j))
                 {
                     p_board.playMove(j);
@@ -138,12 +138,6 @@ int algorithms_ai :: alphaBeta_util(BitBoard p_board, int depth, int alpha, int 
         {
             for (int j = COLS/2 - i; j <= COLS/2 + i; j += (i==0) ? 1 : 2*i)
             {
-                // if (depth == 0)
-                // {
-                //     this->bestCol = -1;
-                //     this->nodeCount = 0;
-                // }
-
                 if (p_board.isPlayable(j))
                 {
                     p_board.playMove(j);
@@ -206,12 +200,6 @@ int algorithms_ai :: principalVariation_util(BitBoard p_board, int depth, int al
         {
             for (int j = COLS/2 - i; j <= COLS/2 + i; j += (i==0) ? 1 : 2*i)
             {
-                // if (depth == 0)
-                // {
-                //     this->bestCol = -1;
-                //     this->nodeCount = 0;
-                // }
-
                 if (p_board.isPlayable(j))
                 {
                     p_board.playMove(j);
