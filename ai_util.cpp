@@ -1,5 +1,4 @@
 #include "ai_util.hpp"
-
 #include <iostream>
 #include <chrono>
 

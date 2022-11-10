@@ -1,5 +1,4 @@
 #include <iostream>
-#include <chrono>
 #include "game.hpp"
 
 // PUBLIC FUNCTIONS
