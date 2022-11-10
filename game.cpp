@@ -59,6 +59,13 @@ void Game :: render()
     this->board.printBitBoard();
     this->board.printBoard();
     this->board.printMoveHistory();
+
+    for (int i = 0; i < 50; i++)
+    {
+        std::cout << "-";
+    }
+    std::cout << std::endl;
+    
     return;
 }
 
@@ -148,9 +155,14 @@ int Game :: aiChoice()
     p_board.switchPlayers();
 
     algorithms_ai aiUtil(p_board, 10); // 10 = MAX_DEPTH
-    int col = aiUtil.principalVariation(true, true);
+    execution_results result = aiUtil.principalVariation(true, true);
 
-    return col;
+    std::cout << "\t\t  column_chosen:: " << result.col_idx_chosen + 1 << std::endl;
+    std::cout << "\t\t   search_score:: " << result.search_score << std::endl;
+    std::cout << "\t\t nodes_explored:: " << result.nodes_explored << std::endl;
+    std::cout << "\t\t execution_time:: " << result.execution_time << std::endl;
+
+    return result.col_idx_chosen;
 }
 
 void Game :: aiMove()

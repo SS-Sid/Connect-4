@@ -4,13 +4,26 @@
 #include "board.hpp"
 
 
+class execution_results
+{
+public:
+    int col_idx_chosen;
+    int search_score;
+
+    int nodes_explored;
+    double execution_time; //ms
+
+    execution_results(int column_chosen, int search_score, int nodes_explored, double execution_time);
+};
+
+
 class algorithms_ai
 {
 public:
     algorithms_ai(BitBoard p_board, int depth);
     ~algorithms_ai();
 
-    int principalVariation(bool isAlphaBeta, bool isPVS);
+    execution_results principalVariation(bool isAlphaBeta, bool isPVS);
 
 private:
     BitBoard ai_board;

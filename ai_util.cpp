@@ -3,6 +3,15 @@
 #include <chrono>
 
 
+execution_results :: execution_results(int column_chosen, int search_score, int nodes_explored, double execution_time)
+{
+    this->col_idx_chosen = column_chosen;
+    this->search_score = search_score;
+    this->nodes_explored = nodes_explored;
+    this->execution_time = execution_time;
+}
+
+
 algorithms_ai :: algorithms_ai(BitBoard p_board, int depth)
 {
     this->ai_board = p_board;
@@ -16,14 +25,21 @@ algorithms_ai :: ~algorithms_ai()
 }
 
 
-int algorithms_ai :: principalVariation(bool isAlphaBeta, bool isPVS)
+execution_results algorithms_ai :: principalVariation(bool isAlphaBeta, bool isPVS)
 {
     this->bestCol = -1;
     this->nodeCount = -1;
     
-    this->principalVariation_util(this->ai_board, 0, isAlphaBeta, isPVS, -1e9, +1e9);
+    std::chrono::time_point<std::chrono::system_clock> start, end;
 
-    return this->bestCol;
+    start = std::chrono::system_clock::now();
+    int search_score = this->principalVariation_util(this->ai_board, 0, isAlphaBeta, isPVS, -1e9, +1e9);
+    end = std::chrono::system_clock::now();
+    
+    std::chrono::duration<double, std::milli> elapsed_seconds = end - start;
+    execution_results result(this->bestCol, search_score, this->nodeCount, elapsed_seconds.count());
+
+    return result;
 }
 
 
