@@ -10,11 +10,7 @@ public:
     algorithms_ai(BitBoard p_board, int depth);
     ~algorithms_ai();
 
-    int negamax();
-    int alphaBeta();
-    int principalVariation();
-
-    int getBestCol();
+    int principalVariation(bool isAlphaBeta, bool isPVS);
 
 private:
     BitBoard ai_board;
@@ -24,9 +20,7 @@ private:
     int nodeCount;
 
     
-    int negamax_util(BitBoard p_board, int depth);
-    int alphaBeta_util(BitBoard p_board, int depth, int alpha, int beta);
-    int principalVariation_util(BitBoard p_board, int depth, int alpha, int beta);
+    int principalVariation_util(BitBoard p_board, int depth, bool isAlphaBeta, bool isPVS, int alpha, int beta);
 };
 
 

@@ -149,9 +149,7 @@ int Game :: aiChoice()
     p_board.switchPlayers();
 
     algorithms_ai aiUtil(p_board, 10); // 10 = MAX_DEPTH
-    // int col = aiUtil.negamax();
-    // int col = aiUtil.alphaBeta();
-    int col = aiUtil.principalVariation();
+    int col = aiUtil.principalVariation(true, true);
 
     return col;
 }
