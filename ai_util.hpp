@@ -3,7 +3,7 @@
 
 #include "board.hpp"
 
-const double TIMEOUT_VAL = 10000; //ms (10s)
+const double TIMEOUT_VAL = 5000; //ms (10s)
 
 class execution_results
 {

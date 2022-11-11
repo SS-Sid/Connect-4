@@ -145,7 +145,7 @@ int algorithms_ai :: iterative_deepening_util(bool isAlphaBeta, bool isPVS)
         curr = std::chrono::system_clock::now();
         elapsed_seconds = curr - start;
         std::cout << "\t\t" << elapsed_seconds.count() << std::endl;
-        if (elapsed_seconds.count() >= TIMEOUT_VAL)
+        if (elapsed_seconds.count() >= TIMEOUT_VAL || ai_board.getMove() + this->maxDepth == ROWS * COLS)
         {
             break;
         }
