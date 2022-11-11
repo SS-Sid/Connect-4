@@ -3,6 +3,7 @@
 
 #include "board.hpp"
 #include "ai_util.hpp"
+#include <cstdio>
 
 class Game
 {
@@ -23,6 +24,7 @@ private:
     // PRIVATE VARIABLES
     int gameType;
     BitBoard board;
+    FILE * result_fp;
 
     // PRIVATE FUNCTIONS
     void initGameType();

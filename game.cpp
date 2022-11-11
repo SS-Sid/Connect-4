@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstdio>
 #include "game.hpp"
 
 // PUBLIC FUNCTIONS
@@ -111,6 +112,10 @@ void Game :: initGameType()
     }
     
     this->gameType = num;
+
+    this->result_fp = fopen("./results.csv", "w");
+    fclose(this->result_fp);
+    
     return;
 }
 
@@ -155,13 +160,17 @@ int Game :: aiChoice()
     p_board.switchPlayers();
 
     algorithms_ai aiUtil(p_board, 10); // 10 = MAX_DEPTH
-    execution_results result = aiUtil.principalVariation(true, true, true);
+    execution_results result = aiUtil.principalVariation(true, true, false);
 
     std::cout << "\t\t  column_chosen:: " << result.col_idx_chosen + 1 << std::endl;
     std::cout << "\t\t   search_score:: " << result.search_score << std::endl;
     std::cout << "\t\t nodes_explored:: " << result.nodes_explored << std::endl;
     std::cout << "\t\t execution_time:: " << result.execution_time << std::endl;
     std::cout << "\t\t  depth_checked:: " << result.depth_checked << std::endl;
+
+    this->result_fp = fopen("./results.csv", "a");
+    fprintf(this->result_fp, "%d,%d,%d,%lf,%d\n", result.col_idx_chosen, result.search_score, result.nodes_explored, result.execution_time, result.depth_checked);
+    fclose(this->result_fp);
 
     return result.col_idx_chosen;
 }
