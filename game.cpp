@@ -155,12 +155,13 @@ int Game :: aiChoice()
     p_board.switchPlayers();
 
     algorithms_ai aiUtil(p_board, 10); // 10 = MAX_DEPTH
-    execution_results result = aiUtil.principalVariation(true, true);
+    execution_results result = aiUtil.principalVariation(true, true, true);
 
     std::cout << "\t\t  column_chosen:: " << result.col_idx_chosen + 1 << std::endl;
     std::cout << "\t\t   search_score:: " << result.search_score << std::endl;
     std::cout << "\t\t nodes_explored:: " << result.nodes_explored << std::endl;
     std::cout << "\t\t execution_time:: " << result.execution_time << std::endl;
+    std::cout << "\t\t  depth_checked:: " << result.depth_checked << std::endl;
 
     return result.col_idx_chosen;
 }

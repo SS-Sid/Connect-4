@@ -3,6 +3,7 @@
 
 #include "board.hpp"
 
+const double TIMEOUT_VAL = 10000; //ms (10s)
 
 class execution_results
 {
@@ -13,7 +14,9 @@ public:
     int nodes_explored;
     double execution_time; //ms
 
-    execution_results(int column_chosen, int search_score, int nodes_explored, double execution_time);
+    int depth_checked;
+
+    execution_results(int column_chosen, int search_score, int nodes_explored, double execution_time, int depth_checked);
 };
 
 
@@ -23,7 +26,7 @@ public:
     algorithms_ai(BitBoard p_board, int depth);
     ~algorithms_ai();
 
-    execution_results principalVariation(bool isAlphaBeta, bool isPVS);
+    execution_results principalVariation(bool isAlphaBeta, bool isPVS, bool isIDDFS);
 
 private:
     BitBoard ai_board;
@@ -32,8 +35,8 @@ private:
     int bestCol;
     int nodeCount;
 
-    
     int principalVariation_util(BitBoard p_board, int depth, bool isAlphaBeta, bool isPVS, int alpha, int beta);
+    int iterative_deepening_util(bool isAlphaBeta, bool isPVS);
 };
 
 
